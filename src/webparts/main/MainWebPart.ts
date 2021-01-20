@@ -22,8 +22,7 @@ export default class MainWebPart extends BaseClientSideWebPart<IMainWebPartProps
     const element: React.ReactElement<IMainProps> = React.createElement(
       Main,
       {
-        description: this.properties.description,
-        websiteurl: this.context.pageContext.web.absoluteUrl
+        description: this.properties.description
       }
     );
 
