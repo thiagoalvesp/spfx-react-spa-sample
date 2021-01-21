@@ -12,6 +12,7 @@
     "test": "gulp test"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.2",
     "@microsoft/sp-core-library": "1.11.0",
     "@microsoft/sp-lodash-subset": "1.11.0",
     "@microsoft/sp-office-ui-fabric-core": "1.11.0",
@@ -24,10 +25,12 @@
     "office-ui-fabric-react": "6.214.0",
     "react": "16.8.5",
     "react-dom": "16.8.5",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "typeface-roboto": "^1.1.13",
+    "yup": "^0.32.8"
   },
   "devDependencies": {
-    "@microsoft/rush-stack-compiler-3.3": "0.3.5",
+    "@microsoft/rush-stack-compiler-3.9": "0.4.38",
     "@microsoft/sp-build-web": "1.11.0",
     "@microsoft/sp-module-interfaces": "1.11.0",
     "@microsoft/sp-tslint-rules": "1.11.0",
@@ -40,7 +43,9 @@
     "@types/react-dom": "16.8.3",
     "@types/react-router-dom": "^5.1.7",
     "@types/webpack-env": "1.13.1",
+    "@types/yup": "^0.29.11",
     "ajv": "~5.2.2",
+    "file-loader": "^6.2.0",
     "gulp": "~3.9.1"
   }
 }

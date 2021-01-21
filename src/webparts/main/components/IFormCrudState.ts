@@ -1,3 +1,3 @@
 export interface IFormCrudState {
-        id: number;
+        id: string;
 }

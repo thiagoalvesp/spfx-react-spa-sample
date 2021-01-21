@@ -1,0 +1,9 @@
+{
+    "includeExtensions": [
+        "ttf",
+        "woff",
+        "eot",
+        "woff2",
+        "svg"
+    ]
+}
