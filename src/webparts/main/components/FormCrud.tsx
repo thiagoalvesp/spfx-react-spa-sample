@@ -24,7 +24,8 @@ import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { WrappedTextField } from './wrappedFields/WrappedTextField';
 import { WrappedSelect } from './wrappedFields/WrappedSelect';
-import { IWrappedSelectItemMenu } from './wrappedFields/IWrappedSelectItemMenu' ;
+import { IWrappedSelectItemMenu } from './wrappedFields/IWrappedSelectItemMenu';
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 
 interface IFormValues {
     Id: string;
@@ -50,8 +51,8 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
 
     public async componentDidMount() {
         this.tiposClientesItens = [
-            {value:'1',description:'option 1' },
-            {value:'22',description:'option 2' }
+            { value: '1', description: 'option 1' },
+            { value: '22', description: 'option 2' }
         ];
     }
 
@@ -75,10 +76,12 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
 
     public render(): React.ReactElement<IFormCrudProps> {
 
-        const initialValues: any = {
+        const initialValues: IFormValues = {
+            Id: '',
             Title: '',
             Nome: '',
-            DataCadastro: ''
+            DataCadastro: '',
+            TipoCliente: ''
         };
 
         const validationSchema = Yup.object().shape({
@@ -114,7 +117,6 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
                                                 id="Title"
                                                 name="Title"
                                                 label="Title"
-                                                variant="outlined"
                                                 component={WrappedTextField} />
                                         </Grid>
                                         <Grid item xs={6}>
@@ -123,7 +125,6 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
                                                 id="Nome"
                                                 name="Nome"
                                                 label="Nome"
-                                                variant="outlined"
                                                 component={WrappedTextField} />
                                         </Grid>
                                         <Grid item xs={6}>
@@ -133,22 +134,33 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
                                                 name="DataCadastro"
                                                 label="Data Cadastro"
                                                 type="date"
-                                                variant="outlined"
                                                 component={WrappedTextField}
                                                 InputLabelProps={{
                                                     shrink: true,
-                                                  }} />
+                                                }} />
                                         </Grid>
                                         <Grid item xs={6}>
-                                            <Field
-                                                fullWidth
-                                                id="TipoCliente"
-                                                name="TipoCliente"
-                                                label="Tipo de Cliente"
-                                                variant="outlined"
-                                                component={WrappedSelect}
-                                                menuitens={this.tiposClientesItens}
-                                            />
+                                            <FormControl error={Boolean(formikProps.errors.TipoCliente && formikProps.touched.TipoCliente)} fullWidth>
+                                                <TextField
+                                                    id="TipoCliente"
+                                                    select
+                                                    label="TipoCliente"
+                                                    value={formikProps.values.TipoCliente}
+                                                    onChange={formikProps.handleChange("TipoCliente")}
+                                                    margin="normal"
+                                                >
+                                                    <MenuItem value="">
+                                                        <em>None</em>
+                                                    </MenuItem>
+                                                    <MenuItem value="1">
+                                                        <em>VIP</em>
+                                                    </MenuItem>
+                                                    <MenuItem value="2">
+                                                        <em>Critico</em>
+                                                    </MenuItem>
+                                                </TextField>
+                                                <FormHelperText>{((formikProps.touched.TipoCliente && formikProps.errors.TipoCliente) ? formikProps.errors.TipoCliente : undefined)}</FormHelperText>
+                                            </FormControl>
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Button type="submit" color="primary" variant="contained">
