@@ -1,4 +1,5 @@
 export interface IMainState {
-    listitems: any[]
+    listitems: any[];
+    id: number;
 }
   
