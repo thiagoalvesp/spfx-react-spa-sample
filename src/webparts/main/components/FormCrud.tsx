@@ -5,7 +5,7 @@ import { sp } from "@pnp/sp";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/items";
-import { IItemAddResult } from "@pnp/sp/items";
+import { IItem, IItemAddResult, IItemUpdateResult } from "@pnp/sp/items";
 import {
     Link
 } from "react-router-dom";
@@ -26,6 +26,8 @@ import { WrappedTextField } from './wrappedFields/WrappedTextField';
 import { WrappedSelect } from './wrappedFields/WrappedSelect';
 import { IWrappedSelectItemMenu } from './wrappedFields/IWrappedSelectItemMenu';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import Snackbar, { SnackbarOrigin } from '@material-ui/core/Snackbar';
+import Slide from '@material-ui/core/Slide';
 
 interface IFormValues {
     Id: string;
@@ -43,46 +45,72 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
         //TODO 
         //Verificar outra forma de receber o state de fora do componente
         this.state = {
-            id: this.props.id
+            Id: this.props.id,
+            Title: '',
+            Nome: '',
+            DataCadastro: '',
+            TipoCliente: '',
+            openSnack: false
         };
         this.handleSubmitForm = this.handleSubmitForm.bind(this);
+        this.handleSnackClose = this.handleSnackClose.bind(this);
         this.tiposClientesItens = [];
     }
 
     public async componentDidMount() {
+        console.log(this.state.Id);
         this.tiposClientesItens = [
             { value: '1', description: 'option 1' },
             { value: '22', description: 'option 2' }
         ];
+
+        if (this.state.Id !== '0') {
+            await sp.web.lists.getByTitle("Clientes").items.getById(Number(this.state.Id)).get()
+                .then((result) => {
+                    console.log(result);
+                    this.setState(result);
+                });
+        }
+
+    }
+
+    private handleSnackClose() {
+        this.setState({ openSnack: false });
     }
 
     private async handleSubmitForm(values: IFormValues, formikHelpers: FormikHelpers<IFormValues>) {
-        console.log({ values, formikHelpers });
-        alert(JSON.stringify(values, null, 2));
+        //console.log({ values, formikHelpers });
+        ///alert(JSON.stringify(values, null, 2));
         formikHelpers.setSubmitting(false);
 
-        if (this.props.newRegistration) {
-            const iar: IItemAddResult = await sp.web.lists.getByTitle("Clientes").items.add(values);
-            console.log(iar);
-            //TODO
-            //Setar como newRegistration false
-            //Setar o ID
-        } else {
-            let list = sp.web.lists.getByTitle("Clientes");
+        const ClienteList = sp.web.lists.getByTitle("Clientes").items;
 
-            const i = await list.items.getById(Number(this.state.id)).update(values);
+        if (this.state.Id === '0') {
+            await ClienteList.add(values)
+                .then((result: IItemAddResult) => {
+                    console.log(result.data);
+                    //Setar o ID
+                    this.setState({
+                        Id: result.data.Id
+                    });
+                });
+        } else {
+
+            ClienteList.getById(Number(this.state.Id)).update(values)
+                .then((result: IItemUpdateResult) => {
+                    console.log(result);
+                });
         }
+
+         ////trocar para notistack
+        ///Msg - Sucesso ou Falha
+        this.setState({ openSnack: true });
+
     }
 
     public render(): React.ReactElement<IFormCrudProps> {
 
-        const initialValues: IFormValues = {
-            Id: '',
-            Title: '',
-            Nome: '',
-            DataCadastro: '',
-            TipoCliente: ''
-        };
+        const initialValues: IFormValues = this.state;
 
         const validationSchema = Yup.object().shape({
             Title: Yup.string().min(3, 'Preecha com mais informações!')
@@ -95,11 +123,23 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
 
         return (
             <div>
+
+               
+                <Snackbar
+                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    open={this.state.openSnack}
+                    onClose={this.handleSnackClose}
+                    autoHideDuration={5000}
+                    TransitionComponent={Slide}
+                    message="Salvo com sucesso!"
+                    key={'top' + 'right'}
+                />
+
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-                            <Button component={Link} to="/">
-                                Voltar
+                            <Button component={Link} to={'/'}>
+                            Voltar
                             </Button>
                         </ButtonGroup>
                     </Grid>
@@ -164,7 +204,7 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Button type="submit" color="primary" variant="contained">
-                                                Salvar
+                                            Salvar
                                             </Button>
                                         </Grid>
                                     </Grid>
@@ -173,7 +213,7 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
                         </Formik>
                     </Grid>
                 </Grid>
-            </div>
+            </div >
         );
     }
 }

@@ -49,16 +49,16 @@ export default class Main extends React.Component<IMainProps, IMainState> {
   //Após voltar da gravação recarregar a lista
 
   public async componentDidMount() {
-    /*  sp.web.lists.getByTitle("Clientes").items.get().then(list => {
+      sp.web.lists.getByTitle("Clientes").items.get().then(list => {
         console.log(list);
         this.setState({ listitems: list });
-      }); */
-    this.setState({
-      listitems: [
-        { Id: 1, Title: 'Estoquista', Nome: 'Thiago', DataCadastro: Date.now().toString() },
-        { Id: 2, Title: 'Dev', Nome: 'Enzo', DataCadastro: Date.now().toString() }
-      ]
-    });
+      }); 
+    // this.setState({
+    //   listitems: [
+    //     { Id: 1, Title: 'Estoquista', Nome: 'Thiago', DataCadastro: Date.now().toString() },
+    //     { Id: 2, Title: 'Dev', Nome: 'Enzo', DataCadastro: Date.now().toString() }
+    //   ]
+    // });
   }
 
   private handleListSelection(items: any[]) {

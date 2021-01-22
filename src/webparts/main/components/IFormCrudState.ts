@@ -1,3 +1,8 @@
 export interface IFormCrudState {
-        id: string;
+        Id: string;
+        Title: string;
+        Nome: string;
+        DataCadastro: string;
+        TipoCliente: string;
+        openSnack: boolean
 }
