@@ -10,7 +10,12 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'MainWebPartStrings';
 import Main from './components/Main';
 import { IMainProps } from './components/IMainProps';
-import { setup as pnpSetup } from "@pnp/common";
+import { sp } from '@pnp/sp';  
+import { proxyUrl, webRelativeUrl } from './../settings';  
+import {
+  Environment, EnvironmentType
+} from '@microsoft/sp-core-library';
+
 
 
 
@@ -32,11 +37,34 @@ export default class MainWebPart extends BaseClientSideWebPart<IMainWebPartProps
   }
 
   protected onInit(): Promise<void> {
+
     return super.onInit().then(_=> {
-      pnpSetup({
-        spfxContext: this.context
-      });
+     
+     
+      //pnpSetup({
+      //  spfxContext: this.context
+      //});
+
+      //TODO
+      ///Configurar o config\private.json
+      ///Configurar o settings.ts
+
+      if (Environment.type === EnvironmentType.Local) {
+        console.log(`DEV ENV`);
+        sp.setup({
+          sp: {
+            baseUrl: `${proxyUrl}${webRelativeUrl}`
+          }
+        });
+
+      } else {
+        console.log(`PROD ENV`);
+        sp.setup({ spfxContext: this.context });
+      }
+
     });
+
+
   }
 
   protected onDispose(): void {
