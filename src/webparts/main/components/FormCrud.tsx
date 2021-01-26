@@ -25,9 +25,52 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { WrappedTextField } from './wrappedFields/WrappedTextField';
 import { WrappedSelect } from './wrappedFields/WrappedSelect';
 import { IWrappedSelectItemMenu } from './wrappedFields/IWrappedSelectItemMenu';
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import { FormControl, FormHelperText, InputLabel, MenuItem, Paper, Select, TextField } from '@material-ui/core';
 import Snackbar, { SnackbarOrigin } from '@material-ui/core/Snackbar';
 import Slide from '@material-ui/core/Slide';
+
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+
+
+///TABS
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: any;
+    value: any;
+}
+
+function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box p={3}>
+                    {children}
+                </Box>
+            )}
+        </div>
+    );
+}
+
+function a11yProps(index: any) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
+
+///FIM TABS
 
 interface IFormValues {
     Id: string;
@@ -50,10 +93,12 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
             Nome: '',
             DataCadastro: '',
             TipoCliente: '',
-            openSnack: false
+            openSnack: false,
+            indexTabs: 0
         };
         this.handleSubmitForm = this.handleSubmitForm.bind(this);
         this.handleSnackClose = this.handleSnackClose.bind(this);
+        this.handleChangeTabs = this.handleChangeTabs.bind(this);
         this.tiposClientesItens = [];
     }
 
@@ -76,6 +121,10 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
 
     private handleSnackClose() {
         this.setState({ openSnack: false });
+    }
+
+    private handleChangeTabs(event: any, newValue: number) {
+        this.setState({ indexTabs: newValue });
     }
 
     private async handleSubmitForm(values: IFormValues, formikHelpers: FormikHelpers<IFormValues>) {
@@ -102,7 +151,7 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
                 });
         }
 
-         ////trocar para notistack
+        ////trocar para notistack
         ///Msg - Sucesso ou Falha
         this.setState({ openSnack: true });
 
@@ -124,7 +173,7 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
         return (
             <div>
 
-               
+
                 <Snackbar
                     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                     open={this.state.openSnack}
@@ -135,21 +184,24 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
                     key={'top' + 'right'}
                 />
 
-                <Grid container spacing={3}>
-                    <Grid item xs={12}>
-                        <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-                            <Button component={Link} to={'/'}>
-                            Voltar
-                            </Button>
-                        </ButtonGroup>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Formik
-                            initialValues={initialValues}
-                            validationSchema={validationSchema}
-                            onSubmit={this.handleSubmitForm}>
-                            {(formikProps: FormikProps<IFormValues>) => (
-                                <Form noValidate autoComplete="off">
+
+                <Paper style={{ padding: 16 }}>
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
+                        onSubmit={this.handleSubmitForm}>
+                        {(formikProps: FormikProps<IFormValues>) => (
+                            <Form noValidate autoComplete="off">
+
+                                <AppBar position="static">
+                                    <Tabs value={this.state.indexTabs} onChange={this.handleChangeTabs} aria-label="simple tabs example">
+                                        <Tab label="Cadastro" {...a11yProps(0)} />
+                                        <Tab label="Anexos" {...a11yProps(1)} />
+                                        <Tab label="Form 3" {...a11yProps(2)} />
+                                    </Tabs>
+                                </AppBar>
+                                <TabPanel value={this.state.indexTabs} index={0}>
+
                                     <Grid container spacing={2}>
                                         <Grid item xs={6}>
                                             <Field
@@ -202,17 +254,27 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
                                                 <FormHelperText>{((formikProps.touched.TipoCliente && formikProps.errors.TipoCliente) ? formikProps.errors.TipoCliente : undefined)}</FormHelperText>
                                             </FormControl>
                                         </Grid>
-                                        <Grid item xs={12}>
-                                            <Button type="submit" color="primary" variant="contained">
-                                            Salvar
-                                            </Button>
-                                        </Grid>
                                     </Grid>
-                                </Form>
-                            )}
-                        </Formik>
-                    </Grid>
-                </Grid>
+                                </TabPanel>
+                                <TabPanel value={this.state.indexTabs} index={1}>
+                                    Form 2
+                                </TabPanel>
+                                <TabPanel value={this.state.indexTabs} index={2}>
+                                    Form 3
+                                </TabPanel>
+                                <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
+                                    <Button type="submit" color="primary" variant="contained">
+                                        Salvar
+                                    </Button>
+                                    <Button component={Link} to={'/'}>
+                                        Voltar
+                                    </Button>
+                                </ButtonGroup>
+                            </Form>
+                        )}
+                    </Formik>
+                </Paper>
+
             </div >
         );
     }

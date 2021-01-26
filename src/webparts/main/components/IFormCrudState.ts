@@ -4,5 +4,6 @@ export interface IFormCrudState {
         Nome: string;
         DataCadastro: string;
         TipoCliente: string;
-        openSnack: boolean
+        openSnack: boolean;
+        indexTabs: number;
 }
