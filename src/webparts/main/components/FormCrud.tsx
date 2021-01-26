@@ -128,9 +128,12 @@ export class FormCrud extends React.Component<IFormCrudProps, IFormCrudState> {
     }
 
     private async handleSubmitForm(values: IFormValues, formikHelpers: FormikHelpers<IFormValues>) {
-        //console.log({ values, formikHelpers });
+        console.log({ values, formikHelpers });
         ///alert(JSON.stringify(values, null, 2));
         formikHelpers.setSubmitting(false);
+
+        delete values['openSnack'];
+        delete values['indexTabs'];
 
         const ClienteList = sp.web.lists.getByTitle("Clientes").items;
 

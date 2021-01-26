@@ -40,17 +40,9 @@ export default class MainWebPart extends BaseClientSideWebPart<IMainWebPartProps
 
     return super.onInit().then(_=> {
      
-     
-      //pnpSetup({
-      //  spfxContext: this.context
-      //});
-
-      //TODO
-      ///Configurar o config\private.json
-      ///Configurar o settings.ts
-
       if (Environment.type === EnvironmentType.Local) {
         console.log(`DEV ENV`);
+        console.log(`${proxyUrl}${webRelativeUrl}`);
         sp.setup({
           sp: {
             baseUrl: `${proxyUrl}${webRelativeUrl}`
